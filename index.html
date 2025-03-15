@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>抓住逃跑的小丑</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ruslan+Display&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="game-container">
+      <!-- 游戏开始界面 -->
+      <div id="start-screen" class="screen">
+        <div class="top">
+          <!-- <img src="./assets/joker.png" alt="Joker" class="joker-img" /> -->
+          <button class="music-control">
+            <img src="./assets/music.png" alt="" />
+          </button>
+        </div>
+
+        <!-- <h1 class="title">抓住逃跑的小丑</h1> -->
+        <button id="start-btn" class="start-btn">Start</button>
+        <!-- <img src="./assets/batman.png" alt="Batman" class="batman-img" /> -->
+      </div>
+
+      <!-- 游戏规则界面 -->
+      <div id="rules-screen" class="screen hidden">
+        <h2 class="rules-title">游戏规则</h2>
+        <div class="rules-content"></div>
+        <div class="rules-footer">我已知晓</div>
+      </div>
+
+      <!-- 游戏主界面 -->
+      <div id="game-screen" class="screen hidden">
+        <div class="header">
+          <div class="timer-container">
+            <div class="timer-label">倒计时</div>
+            <div id="timer" class="timer">30.0</div>
+          </div>
+          <button id="trap-btn" class="gift-button">🎁 你的道具来了，快点击试试吧！</button>
+          <style>
+            .gift-button {
+              position: absolute;
+              right: 15px;
+              top: 25px;
+              z-index: 1000;
+              background: linear-gradient(135deg, #ff3366, #ff6633);
+              color: white;
+              padding: 12px 20px;
+              border-radius: 10px;
+              width: 30%;
+              border: 3px solid gold;
+              font-weight: bold;
+              font-size: 14px;
+              box-shadow: 0 5px 15px rgba(255, 99, 71, 0.5);
+              cursor: pointer;
+              transition: all 0.3s ease;
+              animation: pulse 1.5s infinite alternate, shake 3s infinite;
+              text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+            
+            .gift-button:hover {
+              transform: scale(1.05);
+              box-shadow: 0 8px 20px rgba(255, 99, 71, 0.7);
+              background: linear-gradient(135deg, #ff6633, #ff3366);
+            }
+            
+            @keyframes pulse {
+              0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+              100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            }
+            
+            @keyframes shake {
+              0%, 100% { transform: translateX(0); }
+              2%, 6%, 10% { transform: translateX(-3px); }
+              4%, 8%, 12% { transform: translateX(3px); }
+              14%, 100% { transform: translateX(0); }
+            }
+          </style>
+        </div>
+        <div class="game-area">
+          <div class="circle-timer">
+            <span id="circle-number">3</span>
+          </div>
+          <img
+            id="joker-target"
+            class="joker-target"
+            src="./assets/joker-icon.png"
+            alt="Joker Target"
+          />
+          <div class="hit-count">
+            击中次数：
+            <img src="./assets/bat-icon.png" class="bat-icon" />
+            <span id="hits">0</span>
+          </div>
+          <div id="trap-notification" class="trap-notification"></div>
+        </div>
+      </div>
+
+      <!-- 游戏结果界面 -->
+      <div id="result-screen" class="screen hidden">
+        <img id="result-image" src="" alt="Result" class="result-img" />
+        <div id="result-message" class="result-message"></div>
+        <div class="bat-count">
+          <img src="./assets/bat-icon.png" class="bat-icon" />
+          <span id="final-hits">0</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="./powerups.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
