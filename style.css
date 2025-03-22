@@ -32,7 +32,69 @@ body {
   display: flex;
   flex-direction: column;
 }
+#music-select-screen {
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
+.music-title {
+  color: #777777;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px #1a1a1a;
+}
+
+.music-options {
+  display: grid;
+  gap: 1.5rem;
+  width: 80%;
+  max-width: 500px;
+}
+
+.music-option {
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid #595959;
+  border-radius: 15px;
+  padding: 1.2rem;
+  color: rgb(37, 37, 37);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.music-option:hover {
+  background: rgba(178, 178, 178, 0.5);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(69, 69, 69, 0.5);
+}
+
+.music-option.selected {
+  background: rgba(98, 98, 98, 0.5);
+  border-color: #474747;
+  box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
+}
+
+.confirm-music {
+  margin-top: 2rem;
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  background: linear-gradient(45deg, #515151, #585858);
+  border: none;
+  border-radius: 30px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirm-music:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(10, 10, 10, 0.7);
+}
 .screen {
   position: absolute;
   top: 0;
@@ -117,7 +179,7 @@ body {
 /* Active state - when button is pressed */
 .music-control:active {
   transform: scale(0.95);
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(14, 14, 14, 0.4);
 }
 
 /* Animation for when music is playing */
@@ -535,3 +597,4 @@ body {
   50% { filter: hue-rotate(270deg) brightness(1.5); }
   100% { filter: hue-rotate(180deg) brightness(1.2); }
 }
+

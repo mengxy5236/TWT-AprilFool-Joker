@@ -1,3 +1,9 @@
+const musicConfig = {
+  default: 'assets/background1.mp3',
+  selected: null,
+  volume: 0.5
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   // 获取所有需要的DOM元素
   const startScreen = document.getElementById("start-screen");
@@ -17,12 +23,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultMessage = document.getElementById("result-message");
   const musicControlBtn = document.querySelector(".music-control");
   const musicControlImg = musicControlBtn.querySelector("img");
-
+  function initMusicSelection() {
+    const musicScreen = document.getElementById('music-select-screen');
+    const options = document.querySelectorAll('.music-option');
+    const confirmBtn = document.querySelector('.confirm-music');
+  
+    options.forEach(option => {
+      option.addEventListener('click', function() {
+        options.forEach(opt => opt.classList.remove('selected'));
+        this.classList.add('selected');
+        musicConfig.selected = this.dataset.music;
+      });
+    });
+  
+    confirmBtn.addEventListener('click', function() {
+      if (!musicConfig.selected) {
+        musicConfig.selected = musicConfig.default;
+      }
+      localStorage.setItem('selectedMusic', musicConfig.selected);
+      
+      // 根据是否看过规则跳转
+      if (!hasSeenRules) {
+        showScreen(rulesScreen);
+        localStorage.setItem("hasSeenRules", "true");
+        hasSeenRules = true;
+      } else {
+        showScreen(gameScreen);
+        startCountdown();
+      }
+      initBackgroundMusic();
+    });
+  }
+  // 修改后的初始化背景音乐函数
+function initBackgroundMusic() {
+  const selectedMusic = localStorage.getItem('selectedMusic') || musicConfig.default;
+  backgroundMusic.src = `assets/${selectedMusic}`;
+  backgroundMusic.volume = musicConfig.volume;
+  backgroundMusic.loop = true;
+}
   // 游戏参数配置
   const gameConfig = {
     initialTimeLeft: 30.0, // 初始倒计时时间（秒）
-    trapBtnShowSeconds: 2, // 礼物按钮显示时间（秒）
-    trapBtnIntervalSeconds: 3 // 礼物按钮显示间隔（秒）
+    trapBtnShowSeconds: 4, // 礼物按钮显示时间（秒）
+    trapBtnIntervalSeconds: 4 // 礼物按钮显示间隔（秒）
   };
   
   let timeLeft = gameConfig.initialTimeLeft;
@@ -89,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 初始化UI
   function initializeUI() {
+    localStorage.removeItem("hasSeenRules");//debug code
     console.log("初始化界面，hasSeenRules:", hasSeenRules);
     resetAllScreens();
 
@@ -206,15 +250,9 @@ document.addEventListener("DOMContentLoaded", () => {
     e.stopPropagation();
 
     console.log("开始按钮被点击，hasSeenRules:", hasSeenRules);
-
-    if (!hasSeenRules) {
-      showScreen(rulesScreen);
-      localStorage.setItem("hasSeenRules", "true");
-      hasSeenRules = true;
-    } else {
-      showScreen(gameScreen);
-      startCountdown();
-    }
+    // 显示音乐选择界面
+    showScreen(document.getElementById('music-select-screen'));
+    
   }
 
   // 规则确认点击事件
@@ -245,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 1000);
   }
-
+  
   // 初始化小丑位置
   function initializeJoker() {
     jokerTarget.style.left = "50%";
@@ -420,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setTimeout(() => {
-      showScreen(startScreen);
+      showScreen(startScreen);  // 确保返回开始界面而不是音乐选择界面
       circleNumber.style.display = "flex";
       initializeJoker();
     }, 3000);
@@ -511,7 +549,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // 初始化游戏
   initializeJoker();
   initializeUI();
-  
+  initMusicSelection(); 
+  initBackgroundMusic(); 
   // 设置初始倒计时显示
   document.getElementById('timer').textContent = gameConfig.initialTimeLeft.toFixed(1);
   
