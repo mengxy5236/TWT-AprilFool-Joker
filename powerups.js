@@ -7,8 +7,8 @@
 const trapState = {
   isSpeedTrapActive: false,
   isSlowTrapActive: false,
-  isSmallIconTrapActive: false,
-  isJokerCloneTrapActive: false
+  isJokerCloneTrapActive: false,
+  isDoubleHitTrapActive: false
 };
 
 // 全局变量，跟踪是否有陷阱正在激活
@@ -18,16 +18,17 @@ let isAnyTrapActive = false;
 function checkIfAnyTrapActive() {
   return trapState.isSpeedTrapActive || 
          trapState.isSlowTrapActive || 
-         trapState.isSmallIconTrapActive || 
-         trapState.isJokerCloneTrapActive;
+         trapState.isJokerCloneTrapActive ||
+         trapState.isDoubleHitTrapActive;
+
 }
 
 // 陷阱概率配置对象，可以直接调整各个陷阱的出现概率
 const trapProbabilities = {
   speedTrap: 0.25,     // 加速陷阱概率
-  slowTrap: 0.15,      // 减速陷阱概率
-  smallIconTrap: 0.15, // 变小陷阱概率
-  jokerCloneTrap: 0.45 // 分身陷阱概率
+  slowTrap: 0.3,      // 减速陷阱概率
+  jokerCloneTrap: 0.2, // 分身陷阱概率
+  doubleHitTrap:0.25 //双击陷阱概率
 };
 
 
@@ -190,41 +191,6 @@ function activateJokerCloneTrap(){
 }
 
 
-
-
-function activateSmallIconTrap(){
-  // 如果陷阱已经激活，则返回
-  if (trapState.isSmallIconTrapActive) return;
-  
-  console.log('激活变小陷阱');
-  trapState.isSmallIconTrapActive = true;
-  
-  const jokerElement = document.getElementById("joker-target");
-  if (jokerElement) {
-    // 添加视觉效果
-    jokerElement.classList.add("small-icon-boosted");
-    // 显示通知
-    showSimpleNotification("陷阱触发！小丑变小！");
-  }
-
-  // 3秒后恢复正常
-  setTimeout(function() {
-    // 恢复小丑外观
-    if (jokerElement) {
-      jokerElement.classList.remove("small-icon-boosted");
-    }
-    
-    // 重置陷阱状态
-    trapState.isSmallIconTrapActive = false;
-    
-    // 显示通知，延迟500毫秒显示，避免与前一个通知重叠
-    setTimeout(function() {
-      showSimpleNotification("陷阱结束！小丑恢复正常！");
-    }, 500);
-  }, 3000);
-}
-
-
 //========================
 function activateSlowTrap(){
   if (trapState.isSlowTrapActive) return;
@@ -359,7 +325,7 @@ function activateSpeedTrap() {
     
     // 重置陷阱状态
     trapState.isSpeedTrapActive = false;
-    
+    isAnyTrapActive = checkIfAnyTrapActive();
     // 显示通知，延迟500毫秒显示，避免与前一个通知重叠
     setTimeout(function() {
       showSimpleNotification("陷阱结束！小丑速度恢复正常！");
@@ -368,6 +334,36 @@ function activateSpeedTrap() {
 }
 
 //========================
+
+
+// 双击buff陷阱
+function activateDoubleHitTrap() {
+  if (trapState.isDoubleHitTrapActive) return;
+  
+  console.log('激活双倍点击陷阱');
+  trapState.isDoubleHitTrapActive = true;
+  isAnyTrapActive = true;
+
+  showSimpleNotification("小丑奖励！每次点击计为2次！");
+
+  const jokerElement = document.getElementById("joker-target");
+  if (jokerElement) {
+    jokerElement.classList.add("double-hit-effect");
+  }
+  // 5秒持续时间
+  setTimeout(() => {
+    if (jokerElement) {
+      jokerElement.classList.remove("double-hit-effect");
+    }
+    trapState.isDoubleHitTrapActive = false;
+    isAnyTrapActive = checkIfAnyTrapActive();
+    showSimpleNotification("双倍点击结束！");
+  }, 5000);
+}
+
+
+//========================
+
 
 // 显示简单通知
 // 全局变量跟踪当前活动的通知
@@ -461,20 +457,15 @@ function addTrapStyles() {
       100% { transform: scale(0.9) rotate(2deg); }
     }
 
-
-    .small-icon-boosted {
-      transform: scale(0.5) !important;
-      filter: sepia(0.5) hue-rotate(90deg) !important;
-      animation: small-bounce 0.5s infinite alternate !important;
-      transition: all 0.2s ease !important;
-      border: 3px dashed yellow !important;
-      border-radius: 50% !important;
-      box-shadow: 0 0 10px rgba(255, 255, 0, 0.7) !important;
+    .double-hit-effect {
+      filter: brightness(1.8) hue-rotate(90deg) !important;
+      animation: doubleHitGlow 1s infinite alternate !important;
+      box-shadow: 0 0 20px 10px rgba(19, 37, 205, 0.5) !important;
     }
     
-    @keyframes small-bounce {
-      0% { transform: scale(0.25) translateY(0); }
-      100% { transform: scale(0.35) translateY(-5px); }
+    @keyframes doubleHitGlow {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
     }
 
     .simple-notification {
@@ -532,11 +523,11 @@ function forceTriggerTrap() {
         case 'slowTrap':
           activateSlowTrap();
           break;
-        case 'smallIconTrap':
-          activateSmallIconTrap();
-          break;
         case 'jokerCloneTrap':
           activateJokerCloneTrap();
+          break;
+        case 'doubleHitTrap': 
+          activateDoubleHitTrap();
           break;
       }
       return; // 触发一个陷阱后结束
@@ -546,7 +537,7 @@ function forceTriggerTrap() {
   // 防止概率计算错误，默认触发加速陷阱
   activateSpeedTrap();
 }
-
+window.trapState = trapState;
 // 导出函数供主游戏使用
 window.initTrapSystem = initTrapSystem;
 window.forceTriggerTrap = forceTriggerTrap;

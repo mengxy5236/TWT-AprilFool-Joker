@@ -55,7 +55,7 @@ body {
 }
 
 .music-option {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   border: 2px solid #595959;
   border-radius: 15px;
   padding: 1.2rem;
@@ -73,7 +73,7 @@ body {
 }
 
 .music-option.selected {
-  background: rgba(98, 98, 98, 0.5);
+  background: rgba(137, 137, 137, 0.7);
   border-color: #474747;
   box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
 }

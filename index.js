@@ -64,7 +64,7 @@ function initBackgroundMusic() {
   // 游戏参数配置
   const gameConfig = {
     initialTimeLeft: 30.0, // 初始倒计时时间（秒）
-    trapBtnShowSeconds: 4, // 礼物按钮显示时间（秒）
+    trapBtnShowSeconds: 5, // 礼物按钮显示时间（秒）
     trapBtnIntervalSeconds: 4 // 礼物按钮显示间隔（秒）
   };
   
@@ -314,30 +314,27 @@ function initBackgroundMusic() {
       // 按照设定的时间间隔显示按钮
       trapBtnInterval = setInterval(function() {
         if (!gameStarted) {
-          // 游戏结束时清除定时器
           clearInterval(trapBtnInterval);
           return;
         }
-        
+      
         // 检查是否有陷阱正在激活
-        if (typeof window.checkIfAnyTrapActive === 'function') {
-          const isAnyTrapActive = window.checkIfAnyTrapActive();
-          if (isAnyTrapActive) {
-            console.log('有陷阱正在激活，不显示礼物按钮');
-            return; // 如果有陷阱正在激活，不显示礼物按钮
-          }
+        if (typeof window.checkIfAnyTrapActive === 'function' && window.checkIfAnyTrapActive()) {
+          console.log('有陷阱正在激活，不显示礼物按钮');
+          return;
         }
-        
+      
         // 显示按钮
         TrapBtn.style.display = 'block';
-        
-        // 按照设定的时间后隐藏
+      
+        // 设置按钮隐藏的延迟
         setTimeout(function() {
-          TrapBtn.style.display = 'none';
+          if (TrapBtn.style.display === 'block') { // 确保按钮当前是显示的
+            TrapBtn.style.display = 'none';
+          }
         }, trapBtnShowSeconds * 1000);
       }, trapBtnIntervalSeconds * 1000);
     }
-
     moveJoker();
     updateJokerSpeed();
 
@@ -359,7 +356,7 @@ function initBackgroundMusic() {
     }
 
     const baseSpeed = 900; // 降低基础速度，从800降低到600
-    const minSpeed = 250; // 降低最小速度，从200降低到150
+    const minSpeed = 300; // 降低最小速度，从200降低到150
     const speedReduction = Math.min(hits_count * 40, baseSpeed - minSpeed);
     
     // 如果是游戏初始状态（点击次数为0），使用更快的初始速度
@@ -499,7 +496,14 @@ function initBackgroundMusic() {
     createMobileEffect(centerX, centerY);
     
     // 更新击中次数
-    hits_count++;
+    
+  if (window.trapState && window.trapState.isDoubleHitTrapActive) {
+    hits_count += 2; // 双倍点击
+    console.log('双倍点击生效，当前点击次数:', hits_count); // 调试日志
+  } else {
+    hits_count++; // 正常点击
+    console.log('正常点击，当前点击次数:', hits_count); // 调试日志
+  }
     updateHits();
     
     // 动画结束后恢复并移动小丑
