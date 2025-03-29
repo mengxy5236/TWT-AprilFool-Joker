@@ -124,7 +124,7 @@ function initBackgroundMusic() {
   
 1. 倒计时开始后，小丑会随机在页面中移动
 2. 每次点击小丑后，移动速度会加快
-3. 如果在倒计时结束前抓住小丑7次，就能将他关进监狱
+3. 如果在倒计时结束前抓住小丑20次，就能将他关进监狱
 4. 否则小丑就会逃脱`;
 
 
@@ -420,9 +420,36 @@ function initBackgroundMusic() {
       jokerTarget.style.transition = "";
     }, 200);
   }
+  
+let currentUsername = null;
 
+// 新增函数：显示排行榜
+async function showLeaderboard() {
+  const container = document.querySelector('.leaderboard-list');
+  container.innerHTML = '<div class="loading-text">加载中...</div>';
+
+  try {
+    const response = await fetch('/api/leaderboard');
+    const { data } = await response.json();
+    
+    container.innerHTML = data.length > 0 ? '' : '<div class="no-data">暂无记录</div>';
+    
+    data.forEach((item, index) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'music-option leaderboard-item';
+      itemDiv.innerHTML = `
+        <span class="leaderboard-rank">${index + 1}</span>
+        <span class="leaderboard-name">${escapeHtml(item.username)}</span>
+        <span class="leaderboard-score">${item.score}次</span>
+      `;
+      container.appendChild(itemDiv);
+    });
+  } catch (err) {
+    container.innerHTML = '<div class="error-text">数据加载失败</div>';
+  }
+}
   // 结束游戏
-  function endGame(won) {
+  async function endGame(won) {
     clearInterval(gameInterval);
     clearInterval(moveInterval);
     clearInterval(trapBtnInterval); // 清除礼物按钮定时器
@@ -459,6 +486,25 @@ function initBackgroundMusic() {
       circleNumber.style.display = "flex";
       initializeJoker();
     }, 3000);
+
+    // 提交分数
+  if(hits_count > 0) {
+    const username = prompt('请输入你的名字（最多20字）:', '匿名玩家') || '匿名玩家';
+    try {
+      await fetch('/api/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, score: hits_count })
+      });
+      showLeaderboard(); // 刷新排行榜
+    } catch (err) {
+      console.error('分数提交失败:', err);
+    }
+  }
+  
+  // 显示排行榜
+  showScreen(document.getElementById('leaderboard-screen'));
+
   }
 
   // 小丑点击事件处理函数

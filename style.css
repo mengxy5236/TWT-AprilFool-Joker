@@ -41,7 +41,7 @@ body {
 }
 
 .music-title {
-  color: #777777;
+  color: #f0f0f0;
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-shadow: 0 0 10px #1a1a1a;
@@ -95,6 +95,74 @@ body {
   transform: scale(1.1);
   box-shadow: 0 0 20px rgba(10, 10, 10, 0.7);
 }
+
+.loading-text {
+  /* 继承音乐选项的样式 */
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid #595959;
+  border-radius: 15px;
+  padding: 1.2rem;
+  color: rgb(37, 37, 37);
+  font-size: 1.1rem;
+  margin: 10px auto;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px rgba(69, 69, 69, 0.5);
+  transition: all 0.3s ease;
+  animation: loadingPulse 1.5s infinite;
+}
+
+/* 添加加载动画 */
+@keyframes loadingPulse {
+  0% { transform: scale(0.98); opacity: 0.8; }
+  50% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(0.98); opacity: 0.8; }
+}
+
+
+
+.leaderboard-list {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.leaderboard-item {
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid #595959;
+  border-radius: 15px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(69, 69, 69, 0.5);
+}
+
+.leaderboard-rank {
+  font-weight: bold;
+  color: #d4af37; /* 金色 */
+  min-width: 30px;
+}
+
+.leaderboard-name {
+  flex: 1;
+  margin: 0 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-score {
+  font-family: 'Courier New', monospace;
+  color: #ff0000;
+}
+
 .screen {
   position: absolute;
   top: 0;

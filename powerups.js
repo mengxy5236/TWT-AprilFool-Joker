@@ -29,9 +29,9 @@ function checkIfAnyTrapActive() {
 const trapProbabilities = {
   speedTrap: 0.15,     // 加速陷阱概率
   slowTrap: 0.15,      // 减速陷阱概率
-  jokerCloneTrap: 0.1, // 分身陷阱概率
+  jokerCloneTrap: 0.15, // 分身陷阱概率
   doubleHitTrap:0.3,   //双击陷阱概率
-  timeTrap: 0.3        // 时间陷阱概率
+  timeTrap: 0.25        // 时间陷阱概率
 };
 
 
