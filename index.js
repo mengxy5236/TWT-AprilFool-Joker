@@ -178,6 +178,13 @@ function initBackgroundMusic() {
     // 为音乐控制按钮添加事件监听器
     musicControlBtn.addEventListener("click", handleMusicControlClick);
     musicControlBtn.addEventListener("touchstart", handleMusicControlClick);
+
+    // 添加排行榜返回按钮事件
+    document.getElementById('leaderboard-back-btn').addEventListener('click', () => {
+      const startScreen = document.getElementById("start-screen");
+      showScreen(startScreen);
+    });
+
   }
 
   // 检测设备性能并调整
@@ -461,7 +468,7 @@ async function showLeaderboard() {
       TrapBtn.style.display = 'none';
     }
 
-    showScreen(resultScreen);
+    
 
     backgroundMusic.pause();
 
@@ -480,7 +487,7 @@ async function showLeaderboard() {
       resultImage.src = "./assets/joker-escaped.png";
       resultMessage.textContent = `可惜，小丑逃走了！总共点击${hits_count}次`;
     }
-
+    
     setTimeout(() => {
       showScreen(startScreen);  // 确保返回开始界面而不是音乐选择界面
       circleNumber.style.display = "flex";
@@ -501,9 +508,12 @@ async function showLeaderboard() {
       console.error('分数提交失败:', err);
     }
   }
-  
-  // 显示排行榜
-  showScreen(document.getElementById('leaderboard-screen'));
+  showScreen(resultScreen);
+
+  setTimeout(async () => {
+    showScreen(document.getElementById('leaderboard-screen'));
+    await showLeaderboard(); // 直接加载排行榜
+  }, 3000); // 保持3秒后跳转
 
   }
 
