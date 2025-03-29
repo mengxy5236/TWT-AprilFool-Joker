@@ -68,7 +68,7 @@ function initBackgroundMusic() {
     trapBtnIntervalSeconds: 4 // 礼物按钮显示间隔（秒）
   };
   
-  let timeLeft = gameConfig.initialTimeLeft;
+  window.timeLeft = gameConfig.initialTimeLeft;
   let hits_count = 0;
   let gameStarted = false;
   let gameInterval;
@@ -519,7 +519,7 @@ function initBackgroundMusic() {
     // 更新小丑移动速度
     updateJokerSpeed();
 
-    if (hits_count === 7) {
+    if (hits_count >=20) {
       localStorage.setItem("gameWon", "true");
     }
   }

@@ -8,7 +8,8 @@ const trapState = {
   isSpeedTrapActive: false,
   isSlowTrapActive: false,
   isJokerCloneTrapActive: false,
-  isDoubleHitTrapActive: false
+  isDoubleHitTrapActive: false,
+  isTimeTrapActive: false
 };
 
 // 全局变量，跟踪是否有陷阱正在激活
@@ -19,16 +20,18 @@ function checkIfAnyTrapActive() {
   return trapState.isSpeedTrapActive || 
          trapState.isSlowTrapActive || 
          trapState.isJokerCloneTrapActive ||
-         trapState.isDoubleHitTrapActive;
+         trapState.isDoubleHitTrapActive||
+         trapState.isTimeTrapActive;
 
 }
 
 // 陷阱概率配置对象，可以直接调整各个陷阱的出现概率
 const trapProbabilities = {
-  speedTrap: 0.25,     // 加速陷阱概率
-  slowTrap: 0.3,      // 减速陷阱概率
-  jokerCloneTrap: 0.2, // 分身陷阱概率
-  doubleHitTrap:0.25 //双击陷阱概率
+  speedTrap: 0.15,     // 加速陷阱概率
+  slowTrap: 0.15,      // 减速陷阱概率
+  jokerCloneTrap: 0.1, // 分身陷阱概率
+  doubleHitTrap:0.3,   //双击陷阱概率
+  timeTrap: 0.3        // 时间陷阱概率
 };
 
 
@@ -364,6 +367,34 @@ function activateDoubleHitTrap() {
 
 //========================
 
+//增加时间陷阱
+
+function activateTimeTrap() {
+  if (trapState.isTimeTrapActive) return;
+  
+  console.log('激活时间陷阱');
+  trapState.isTimeTrapActive = true;
+  showSimpleNotification("时间buff！获得额外10秒！");
+
+  // 核心逻辑：增加时间
+  if (typeof window.timeLeft !== 'undefined') {
+    window.timeLeft += 10.0;
+    document.getElementById('timer').textContent = window.timeLeft.toFixed(1);
+  }
+
+  // 3秒后重置状态
+  setTimeout(() => {
+    trapState.isTimeTrapActive = false;
+    showSimpleNotification("时间奖励生效完毕！");
+  }, 3000);
+}
+
+
+
+//=========================
+
+
+
 
 // 显示简单通知
 // 全局变量跟踪当前活动的通知
@@ -467,7 +498,17 @@ function addTrapStyles() {
       0% { transform: scale(1); }
       100% { transform: scale(1.1); }
     }
+    
+    .time-boosted {
+      filter: hue-rotate(120deg) brightness(1.5) !important;
+      animation: timeGlow 1s infinite alternate !important;
+    }
 
+    @keyframes timeGlow {
+      0% { box-shadow: 0 0 10px rgba(248, 129, 26, 0.5); }
+      100% { box-shadow: 0 0 20px rgba(255, 131, 42, 0.8); }
+    }
+    
     .simple-notification {
       position: fixed;
       top: 50%;
@@ -528,6 +569,9 @@ function forceTriggerTrap() {
           break;
         case 'doubleHitTrap': 
           activateDoubleHitTrap();
+          break;
+        case 'timeTrap':
+          activateTimeTrap();
           break;
       }
       return; // 触发一个陷阱后结束
